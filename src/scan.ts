@@ -7,6 +7,8 @@ import TreeNode from './TreeNode';
 
 let minimumWordLength = 3;
 
+const shorterThanTwoCharsWords = ['in', 'my', 'on', 'of', 'by', 'at', 'as', 'up', 'a', 'i', 'an'];
+
 function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -18,6 +20,8 @@ function scanDomain(domain: string, startingIndex: number) {
     const segment = domain.slice(startingIndex, i);
     if (segment.length > minimumWordLength - 1) {
       if (dictionary.check(capitalizeFirstLetter(segment))) foundMatches.push(segment);
+    } else if (segment.length <= 2) {
+      if (shorterThanTwoCharsWords.includes(segment)) foundMatches.push(segment);
     }
   }
 

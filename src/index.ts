@@ -8,9 +8,8 @@ const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
-  
-  if (req.method == 'POST') {
 
+  if (req.method == 'POST') {
     var body = '';
 
     req.on('data', function (data) {
@@ -27,7 +26,7 @@ const server = http.createServer((req, res) => {
       postData = JSON.parse(body);
 
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(findMostLikelyWordsInDomains(postData, 2)));
+      res.end(JSON.stringify(findMostLikelyWordsInDomains(postData)));
     });
   } else {
     // res.statusCode = 500;

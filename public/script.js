@@ -6,27 +6,66 @@ function getCsvResults(results) {
   let fileContent = 'Domain,Words';
 
   function newRow(rowArr) {
-    fileContent += '\r\n' + rowArr.join(',');
+    fileContent += '\r\n' + rowArr.map(row => `"${row}"`).join(',');
   }
 
   results.forEach(result => {
-    newRow([result.domain, result.summary.map(word => capitalizeFirstLetter(word)).join(' ')]);
+    const possibleCombinations = getPossibleCombinations(result.parts);
+    possibleCombinations.forEach((possibleCombination, index) => {
+      if (index === 0) {
+        newRow([
+          result.domain,
+          possibleCombination.map(words => words.map(word => capitalizeFirstLetter(word)).join(' ')).join(' '),
+          possibleCombinations.length > 1 ? 'flag' : '',
+        ]);
+      } else {
+        newRow(['', possibleCombination.map(words => words.map(word => capitalizeFirstLetter(word)).join(' ')).join(' ')]);
+      }
+    });
   });
 
   return fileContent;
 }
 
-function returnAllPossibleOptions(domainParts) {
-  return domainParts
-    .map(domainPartsPossibleBranches => {
-      // console.log(
-      return domainPartsPossibleBranches
-        .map(domainPartWords => {
-          return domainPartWords.map(word => capitalizeFirstLetter(word)).join(' ');
-        })
-        .join(' ');
-    })
-    .join(' ');
+function getPossibleCombinations(arr) {
+  const possibleCombinations = [];
+  const val = arr.map(() => 0);
+  const max = arr.map(possibleBranches => possibleBranches.length - 1);
+
+  let maxIndex = 0;
+  let currentIndex = 0;
+
+  function recordVal() {
+    possibleCombinations.push([...val]);
+  }
+
+  function reset(mIndex) {
+    for (let index = 0; index < mIndex; index++) {
+      val[index] = 0;
+    }
+  }
+
+  function add() {
+    if (val[currentIndex] < max[currentIndex]) {
+      val[currentIndex] += 1;
+      recordVal();
+    } else if (val[currentIndex + 1] < max[currentIndex + 1]) {
+      val[currentIndex + 1] += 1;
+      reset(currentIndex + 1);
+      currentIndex = 0;
+      recordVal();
+    } else {
+      currentIndex += 1;
+    }
+  }
+
+  recordVal();
+
+  while (currentIndex < val.length) {
+    add();
+  }
+
+  return possibleCombinations.map(combination => combination.map((branch, index) => arr[index][branch]));
 }
 
 function submitDomains() {
@@ -41,11 +80,18 @@ function submitDomains() {
     .then(results => {
       resultsDiv.innerHTML = results
         .map(result => {
-          console.log(JSON.stringify(result.parts, null, 4));
-          console.log(returnAllPossibleOptions(result.parts));
+          const possibleCombinations = getPossibleCombinations(result.parts);
+          const possibleCombinationsHTML = `<ul class="list-disc pl-6">
+            ${possibleCombinations
+              .map(possibleCombination => {
+                return `<li>${possibleCombination.map(words => words.map(word => capitalizeFirstLetter(word)).join(' ')).join(' ')}</li>`;
+              })
+              .join(' ')}
+            </ul>`;
+
           return `<div class="flex">
               <div class="p-2 border-r border-b border-gray-500 w-full">${result.domain}</div>
-              <div class="p-2 border-r border-b border-gray-500 w-full">${result.summary.map(word => capitalizeFirstLetter(word)).join(' ')}</div>
+              <div class="p-2 border-r border-b border-gray-500 w-full${possibleCombinations.length > 1 ? ' bg-red-200' : ''}">${possibleCombinationsHTML}</div>
           </div>`;
         })
         .join('');

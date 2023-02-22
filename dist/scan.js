@@ -8,6 +8,7 @@ const typo_js_1 = __importDefault(require("typo-js"));
 const dictionary = new typo_js_1.default('en_US');
 const TreeNode_1 = __importDefault(require("./TreeNode"));
 let minimumWordLength = 3;
+const shorterThanTwoCharsWords = ['in', 'my', 'on', 'of', 'by', 'at', 'as', 'up', 'a', 'i', 'an'];
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -17,6 +18,10 @@ function scanDomain(domain, startingIndex) {
         const segment = domain.slice(startingIndex, i);
         if (segment.length > minimumWordLength - 1) {
             if (dictionary.check(capitalizeFirstLetter(segment)))
+                foundMatches.push(segment);
+        }
+        else if (segment.length <= 2) {
+            if (shorterThanTwoCharsWords.includes(segment))
                 foundMatches.push(segment);
         }
     }

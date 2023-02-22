@@ -22,7 +22,7 @@ const server = http_1.default.createServer((req, res) => {
         req.on('end', function () {
             postData = JSON.parse(body);
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify((0, scan_1.findMostLikelyWordsInDomains)(postData, 2)));
+            res.end(JSON.stringify((0, scan_1.findMostLikelyWordsInDomains)(postData)));
         });
     }
     else {
