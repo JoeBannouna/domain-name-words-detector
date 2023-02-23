@@ -1,5 +1,7 @@
+import path from 'path';
+
 import Typo from 'typo-js';
-const dictionary = new Typo('en_US');
+const dictionary = new Typo('en_US', null, null, { dictionaryPath: path.join('dictionaries') });
 
 import { Domain } from './types';
 
@@ -80,7 +82,11 @@ function getWordsFromDomain(domain: string) {
 
   // Split domain name at each dot (.) occurrence
   // Loop over once and find matching words
-  const returnValue = domainName.split(/\.|\-/).map(domainPart => scanDomainPart(domainPart));
+  console.log(domainName);
+  const returnValue = domainName.split(/\.|\-/).map(domainPart => {
+    console.log(domainPart);
+    return scanDomainPart(domainPart);
+  });
 
   return returnValue;
 }

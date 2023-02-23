@@ -4,8 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.findMostLikelyWordsInDomains = void 0;
+const path_1 = __importDefault(require("path"));
 const typo_js_1 = __importDefault(require("typo-js"));
-const dictionary = new typo_js_1.default('en_US');
+const dictionary = new typo_js_1.default('en_US', null, null, { dictionaryPath: path_1.default.join('dictionaries') });
 const TreeNode_1 = __importDefault(require("./TreeNode"));
 let minimumWordLength = 3;
 const shorterThanTwoCharsWords = ['in', 'my', 'on', 'of', 'by', 'at', 'as', 'up', 'a', 'i', 'an'];
@@ -70,7 +71,11 @@ function getWordsFromDomain(domain) {
     const domainName = domain.replace('www.', '').slice(0, domain.lastIndexOf('.'));
     // Split domain name at each dot (.) occurrence
     // Loop over once and find matching words
-    const returnValue = domainName.split(/\.|\-/).map(domainPart => scanDomainPart(domainPart));
+    console.log(domainName);
+    const returnValue = domainName.split(/\.|\-/).map(domainPart => {
+        console.log(domainPart);
+        return scanDomainPart(domainPart);
+    });
     return returnValue;
 }
 function getWordsFromDomains(domains) {
