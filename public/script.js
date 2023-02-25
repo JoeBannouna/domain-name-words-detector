@@ -3,7 +3,7 @@ function capitalizeFirstLetter(string) {
 }
 
 function getCsvResults(results) {
-  let fileContent = 'Domain,Words';
+  let fileContent = 'Domain,Words,Multi-possibilities,Characters skipped';
 
   function newRow(rowArr) {
     fileContent += '\r\n' + rowArr.map(row => `"${row}"`).join(',');
@@ -11,16 +11,22 @@ function getCsvResults(results) {
 
   results.forEach(result => {
     const possibleCombinations = getPossibleCombinations(result.parts);
-    possibleCombinations.forEach((possibleCombination, index) => {
-      if (index === 0) {
-        newRow([
-          result.domain,
-          possibleCombination.map(words => words.map(word => capitalizeFirstLetter(word)).join(' ')).join(' '),
-          possibleCombinations.length > 1 ? 'flag' : '',
-        ]);
-      } else {
-        newRow(['', possibleCombination.map(words => words.map(word => capitalizeFirstLetter(word)).join(' ')).join(' ')]);
-      }
+
+    const domainName = result.domain.slice(0, result.domain.lastIndexOf('.'));
+    const domainNameChars = domainName.match(/[a-z]/gi) ?? [];
+
+    const firstResult = possibleCombinations?.[0].map(words => words.map(word => capitalizeFirstLetter(word)).join(' ')).join(' ') ?? '';
+    const firstResultChars = firstResult.match(/[a-z]/gi) ?? [];
+
+    const charactersSkipped = firstResultChars.length < domainNameChars.length;
+
+    possibleCombinations.forEach(possibleCombination => {
+      newRow([
+        result.domain,
+        possibleCombination.map(words => words.map(word => capitalizeFirstLetter(word)).join(' ')).join(' '),
+        possibleCombinations.length > 1 ? 'flag' : '',
+        charactersSkipped ? 'not full' : '',
+      ]);
     });
   });
 
@@ -73,7 +79,7 @@ function submitDomains() {
   const downloadButtonContainer = document.getElementById('download-button-container');
   const textarea = document.getElementById('textarea');
 
-  const reqBody = textarea.value.split('\n');
+  const reqBody = textarea.value.split('\n').filter(domain => domain.trim() !== '');
 
   fetch('http://10.0.0.8:8000', { body: JSON.stringify(reqBody), method: 'POST', headers: { 'Content-Type': 'application/json' } })
     .then(res => res.json())
@@ -89,9 +95,19 @@ function submitDomains() {
               .join(' ')}
             </ul>`;
 
+          const domainName = result.domain.slice(0, result.domain.lastIndexOf('.'));
+          const domainNameChars = domainName.match(/[a-z]/gi) ?? [];
+
+          const firstResult = possibleCombinations?.[0].map(words => words.map(word => capitalizeFirstLetter(word)).join(' ')).join(' ') ?? '';
+          const firstResultChars = firstResult.match(/[a-z]/gi) ?? [];
+
+          const charactersSkipped = firstResultChars.length < domainNameChars.length;
+
           return `<div class="flex">
               <div class="p-2 border-r border-b border-gray-500 w-full">${result.domain}</div>
-              <div class="p-2 border-r border-b border-gray-500 w-full${possibleCombinations.length > 1 ? ' bg-red-200' : ''}">${possibleCombinationsHTML}</div>
+              <div class="p-2 border-r border-b border-gray-500 w-full${possibleCombinations.length > 1 ? ' bg-red-200' : ''}${
+            charactersSkipped ? ' bg-yellow-200' : ''
+          }">${possibleCombinationsHTML}</div>
           </div>`;
         })
         .join('');

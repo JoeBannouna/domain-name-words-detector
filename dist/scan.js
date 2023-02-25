@@ -9,7 +9,7 @@ const typo_js_1 = __importDefault(require("typo-js"));
 const dictionary = new typo_js_1.default('en_US', null, null, { dictionaryPath: path_1.default.join('dictionaries') });
 const TreeNode_1 = __importDefault(require("./TreeNode"));
 let minimumWordLength = 3;
-const shorterThanTwoCharsWords = ['in', 'my', 'on', 'of', 'by', 'at', 'as', 'up', 'a', 'i', 'an'];
+const shorterThanTwoCharsWords = ['in', 'my', 'on', 'of', 'by', 'at', 'as', 'up', 'a', 'i', 'an', 'do', 'it', 'go', 'me', 'ai'];
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -71,11 +71,7 @@ function getWordsFromDomain(domain) {
     const domainName = domain.replace('www.', '').slice(0, domain.lastIndexOf('.'));
     // Split domain name at each dot (.) occurrence
     // Loop over once and find matching words
-    console.log(domainName);
-    const returnValue = domainName.split(/\.|\-/).map(domainPart => {
-        console.log(domainPart);
-        return scanDomainPart(domainPart);
-    });
+    const returnValue = domainName.split(/\.|\-/).map(domainPart => scanDomainPart(domainPart));
     return returnValue;
 }
 function getWordsFromDomains(domains) {
@@ -106,7 +102,6 @@ function findMostLikelyWordsInDomains(domains, minimumWordLengthVar = 3) {
     minimumWordLength = minimumWordLengthVar;
     return getWordsFromDomains(domains).map((domain, index) => {
         const mostLikelyBranches = returnMostLikelyBranchesForDomain(domain);
-        console.log(mostLikelyBranches);
         return { domain: domains[index], parts: mostLikelyBranches, summary: Array.from(new Set(mostLikelyBranches.flat().flat())) };
     });
 }

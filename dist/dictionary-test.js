@@ -6,5 +6,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
 const typo_js_1 = __importDefault(require("typo-js"));
 const dictionary = new typo_js_1.default('en_US', null, null, { dictionaryPath: path_1.default.join('dictionaries') });
-const output = dictionary.check('cardio');
+const output = dictionary.check('yp');
 console.log(output);
