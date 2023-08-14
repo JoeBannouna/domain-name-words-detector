@@ -5,6 +5,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const scan_1 = require("./scan");
 const http_1 = __importDefault(require("http"));
+// @ts-ignore
+const static_server_1 = __importDefault(require("static-server"));
+const pubServer = new static_server_1.default({
+    rootPath: './public',
+    port: 8080,
+    name: 'my-http-pubServer',
+    host: '0.0.0.0', // optional, defaults to any interface
+    // cors: '*', // optional, defaults to undefined
+    // followSymlink: true, // optional, defaults to a 404 error
+    // templates: {
+    //   index: 'foo.html', // optional, defaults to 'index.html'
+    //   notFound: '404.html', // optional, defaults to undefined
+    // },
+});
+pubServer.start(function () {
+    console.log('Server listening to', pubServer.port);
+});
 // Create a local server to receive data from
 const server = http_1.default.createServer((req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');

@@ -13,6 +13,7 @@
     "@types/typo-js": "^1.2.0"
   },
   "dependencies": {
+    "static-server": "^2.2.1",
     "typo-js": "^1.2.2"
   }
 }

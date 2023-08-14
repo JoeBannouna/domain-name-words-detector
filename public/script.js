@@ -81,7 +81,7 @@ function submitDomains() {
 
   const reqBody = textarea.value.split('\n').filter(domain => domain.trim() !== '');
 
-  fetch('http://10.0.0.8:8000', { body: JSON.stringify(reqBody), method: 'POST', headers: { 'Content-Type': 'application/json' } })
+  fetch(`http://${new URL(window.location).hostname}:8000`, { body: JSON.stringify(reqBody), method: 'POST', headers: { 'Content-Type': 'application/json' } })
     .then(res => res.json())
     .then(results => {
       resultsDiv.innerHTML = results

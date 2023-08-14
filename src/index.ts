@@ -1,7 +1,25 @@
 import { findMostLikelyWordsInDomains } from './scan';
 
 import http from 'http';
-import qs from 'querystring';
+// @ts-ignore
+import StaticServer from 'static-server';
+
+const pubServer = new StaticServer({
+  rootPath: './public', // required, the root of the pubServer file tree
+  port: 8080, // required, the port to listen
+  name: 'my-http-pubServer', // optional, will set "X-Powered-by" HTTP header
+  host: '0.0.0.0', // optional, defaults to any interface
+  // cors: '*', // optional, defaults to undefined
+  // followSymlink: true, // optional, defaults to a 404 error
+  // templates: {
+  //   index: 'foo.html', // optional, defaults to 'index.html'
+  //   notFound: '404.html', // optional, defaults to undefined
+  // },
+});
+
+pubServer.start(function () {
+  console.log('Server listening to', pubServer.port);
+});
 
 // Create a local server to receive data from
 const server = http.createServer((req, res) => {
