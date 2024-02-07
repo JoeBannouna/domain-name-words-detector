@@ -1,0 +1,33 @@
+Given a domain name and dictaionary (constant time word checking)
+Return the shortest possible sequence of words included in the domain appearing in order that consists of the longest possible words
+
+given: "12hellobrocrapbruh.net"
+output: "12 hello crap bruh"
+
+given "cutecatvideos.com"
+output "cute cat videos"
+
+loop over every character (worst case O(n))
+
+/*
+
+helper(index, original, words_arr) {
+  if (index >= original.length) return words_arr;
+  
+  current_output = [];
+  for (i = index; i < original.length; i++) {
+    substring = original.substr(index, i);
+    
+    if (substring is a word && word_length > min_length) {
+      output_words = helper(i, original, {...words_arr, substring});
+      
+      if (output_words.total_characters > current_output.total_characters) {
+        current_output = output_words;
+      } else if (output_words.total_characters == current_output.total_characters) {
+        if (output_words.length < current_output.length) current_output = output_words;
+      }
+    }
+  }
+
+  return current_output;
+}

@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class TreeNode {
     constructor(value, startingIndex, parent = null) {
         this.value = { word: value, deadEnd: null, startingIndex: startingIndex };
@@ -92,4 +90,4 @@ class TreeNode {
         }
     }
 }
-exports.default = TreeNode;
+export default TreeNode;

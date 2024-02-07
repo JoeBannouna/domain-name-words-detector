@@ -5,7 +5,7 @@ const dictionary = new Typo('en_US', null, null, { dictionaryPath: path.join('di
 
 import { Domain } from './types';
 
-import TreeNode from './TreeNode';
+import TreeNode from './TreeNode.js';
 
 let minimumWordLength = 3;
 

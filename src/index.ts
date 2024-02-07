@@ -1,4 +1,4 @@
-import { findMostLikelyWordsInDomains } from './scan';
+import { findMostLikelyWordsInDomains } from './scan.js';
 
 import http from 'http';
 // @ts-ignore

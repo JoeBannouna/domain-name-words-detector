@@ -1,13 +1,8 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const scan_1 = require("./scan");
-const http_1 = __importDefault(require("http"));
+import { findMostLikelyWordsInDomains } from './scan.js';
+import http from 'http';
 // @ts-ignore
-const static_server_1 = __importDefault(require("static-server"));
-const pubServer = new static_server_1.default({
+import StaticServer from 'static-server';
+const pubServer = new StaticServer({
     rootPath: './public',
     port: 8080,
     name: 'my-http-pubServer',
@@ -23,7 +18,7 @@ pubServer.start(function () {
     console.log('Server listening to', pubServer.port);
 });
 // Create a local server to receive data from
-const server = http_1.default.createServer((req, res) => {
+const server = http.createServer((req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
@@ -39,7 +34,7 @@ const server = http_1.default.createServer((req, res) => {
         req.on('end', function () {
             postData = JSON.parse(body);
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify((0, scan_1.findMostLikelyWordsInDomains)(postData)));
+            res.end(JSON.stringify(findMostLikelyWordsInDomains(postData)));
         });
     }
     else {

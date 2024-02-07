@@ -1,13 +1,7 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.findMostLikelyWordsInDomains = void 0;
-const path_1 = __importDefault(require("path"));
-const typo_js_1 = __importDefault(require("typo-js"));
-const dictionary = new typo_js_1.default('en_US', null, null, { dictionaryPath: path_1.default.join('dictionaries') });
-const TreeNode_1 = __importDefault(require("./TreeNode"));
+import path from 'path';
+import Typo from 'typo-js';
+const dictionary = new Typo('en_US', null, null, { dictionaryPath: path.join('dictionaries') });
+import TreeNode from './TreeNode.js';
 let minimumWordLength = 3;
 const shorterThanTwoCharsWords = ['in', 'my', 'on', 'of', 'by', 'at', 'as', 'up', 'a', 'i', 'an', 'do', 'it', 'go', 'me', 'ai'];
 function capitalizeFirstLetter(string) {
@@ -34,7 +28,7 @@ function scanNextLayerOfNodes(initialNode, domainPart) {
             let i = 0;
             do {
                 scanDomain(domainPart, node.value.startingIndex + i).forEach(result => {
-                    const child = new TreeNode_1.default(result, node.value.startingIndex + i + result.length, node);
+                    const child = new TreeNode(result, node.value.startingIndex + i + result.length, node);
                     node.addChild(child);
                 });
                 if (node.descendants.length === 0)
@@ -53,7 +47,7 @@ function scanNextLayerOfNodes(initialNode, domainPart) {
     });
 }
 function scanDomainPart(domainPart) {
-    const initialNode = new TreeNode_1.default(domainPart, 0);
+    const initialNode = new TreeNode(domainPart, 0);
     while (initialNode.getAllLeavesWithoutDeadEnds().length > 0) {
         scanNextLayerOfNodes(initialNode, domainPart);
     }
@@ -98,11 +92,10 @@ function returnMostLikelyBranchesForDomain(domain) {
         return branchesWithLeastAmountOfWords;
     });
 }
-function findMostLikelyWordsInDomains(domains, minimumWordLengthVar = 3) {
+export function findMostLikelyWordsInDomains(domains, minimumWordLengthVar = 3) {
     minimumWordLength = minimumWordLengthVar;
     return getWordsFromDomains(domains).map((domain, index) => {
         const mostLikelyBranches = returnMostLikelyBranchesForDomain(domain);
         return { domain: domains[index], parts: mostLikelyBranches, summary: Array.from(new Set(mostLikelyBranches.flat().flat())) };
     });
 }
-exports.findMostLikelyWordsInDomains = findMostLikelyWordsInDomains;

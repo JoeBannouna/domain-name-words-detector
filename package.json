@@ -9,11 +9,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/benchmark": "^2.1.5",
     "@types/node": "^18.14.0",
     "@types/typo-js": "^1.2.0"
   },
   "dependencies": {
+    "benchmark": "^2.1.4",
+    "random-words": "^2.0.1",
     "static-server": "^2.2.1",
     "typo-js": "^1.2.2"
-  }
+  },
+  "type": "module"
 }
